@@ -1,4 +1,3 @@
---create schema commerce_platform
 --create TABLE commerce_platform.employee_table(
 --employee_id SERIAL primary key,
 --first_name VARCHAR(15) not null,
@@ -140,10 +139,10 @@ SELECT COUNT(DISTINCT first_name) AS unique_first_names
 FROM commerce_platform.employee_table;
 
 --21
-SELECT e.*, s.*
-FROM commerce_platform.employee_table e
-LEFT JOIN commerce_platform.sales_table s
-ON e.employee_id = s.employee_id;
+SELECT employees.*, sales.*
+FROM commerce_platform.employee_table employees
+LEFT JOIN commerce_platform.sales_table sales
+ON employees.employee_id = sales.employee_id;
 
 --22
 SELECT *
@@ -153,64 +152,64 @@ LIMIT 10;
 
 --23
 SELECT *
-FROM commerce_platform.employee_table e
-LEFT JOIN commerce_platform.sales_table s
-ON e.employee_id = s.employee_id
-WHERE s.sale_id IS NULL;
+FROM commerce_platform.employee_table employees
+LEFT JOIN commerce_platform.sales_table sales
+ON employees.employee_id = sales.employee_id
+WHERE sales.sale_id IS NULL;
 
 --24
-SELECT e.employee_id, COUNT(s.sale_id) AS total_sales
-FROM commerce_platform.employee_table e
-LEFT JOIN commerce_platform.sales_table s
-ON e.employee_id = s.employee_id
-GROUP BY e.employee_id;
+SELECT employees.employee_id,employees.first_name,employees.last_name, COUNT(sales.sale_id) AS total_sales
+FROM commerce_platform.employee_table employees
+LEFT JOIN commerce_platform.sales_table sales
+ON employees.employee_id = sales.employee_id
+GROUP BY employees.employee_id,employees.first_name,employees.last_name;
 
 --25
-SELECT e.employee_id, SUM(s.total) AS total_sales
-FROM commerce_platform.employee_table e
-JOIN commerce_platform.sales_table s
-ON e.employee_id = s.employee_id
-GROUP BY e.employee_id
+SELECT employee.employee_id,employee.first_name,employee.last_name, SUM(sales.total) AS total_sales
+FROM commerce_platform.employee_table employee
+JOIN commerce_platform.sales_table sales
+ON employee.employee_id = sales.employee_id
+GROUP BY employee.employee_id,employee.first_name,employee.last_name
 ORDER BY total_sales DESC
 LIMIT 1;
 
 --26
-SELECT e.department, AVG(s.quantity) AS average_quantity
-FROM commerce_platform.employee_table e
-JOIN commerce_platform.sales_table s
-ON e.employee_id = s.employee_id
-GROUP BY e.department;
+SELECT employees.department, AVG(sales.quantity) AS average_quantity
+FROM commerce_platform.employee_table employees
+JOIN commerce_platform.sales_table sales
+ON employees.employee_id = sales.employee_id
+GROUP BY employees.department;
 
 --27
-SELECT e.employee_id, e.first_name, e.last_name, SUM(s.total) AS total_sales_2021
-FROM commerce_platform.employee_table e
-JOIN commerce_platform.sales_table s
-ON e.employee_id = s.employee_id
-WHERE EXTRACT(YEAR FROM s.sale_date) = 2021
-GROUP BY e.employee_id, e.first_name, e.last_name;
+SELECT employees.employee_id, employees.first_name, employees.last_name, SUM(sales.total) AS total_sales_2021
+FROM commerce_platform.employee_table employees
+JOIN commerce_platform.sales_table sales
+ON employees.employee_id = sales.employee_id
+WHERE EXTRACT(YEAR FROM sales.sale_date) = 2021
+GROUP BY employees.employee_id, employees.first_name, employees.last_name;
 
 --28
-SELECT e.employee_id, e.first_name, e.last_name, SUM(s.quantity) AS total_quantity
-FROM commerce_platform.employee_table e
-JOIN commerce_platform.sales_table s
-ON e.employee_id = s.employee_id
-GROUP BY e.employee_id, e.first_name, e.last_name
+SELECT employees.employee_id, employees.first_name, employees.last_name, SUM(sales.quantity) AS total_quantity
+FROM commerce_platform.employee_table employees
+JOIN commerce_platform.sales_table sales
+ON employees.employee_id = sales.employee_id
+GROUP BY employees.employee_id, employees.first_name, employees.last_name
 ORDER BY total_quantity DESC
 LIMIT 3;
 
 --29
-SELECT e.department, SUM(s.quantity) AS total_quantity
-FROM commerce_platform.employee_table e
-JOIN commerce_platform.sales_table s
-ON e.employee_id = s.employee_id
-GROUP BY e.department;
+SELECT employees.department, SUM(sales.quantity) AS total_quantity
+FROM commerce_platform.employee_table employees
+JOIN commerce_platform.sales_table sales
+ON employees.employee_id = sales.employee_id
+GROUP BY employees.department;
 
 --30
-SELECT p.category, SUM(s.total) AS total_revenue
-FROM commerce_platform.sales_table s
-JOIN commerce_platform.products_table p
-ON s.product_id = p.product_id
-GROUP BY p.category;
+SELECT product.category, SUM(sales.total) AS total_revenue
+FROM commerce_platform.sales_table sales
+JOIN commerce_platform.products_table product
+ON sales.product_id = product.product_id
+GROUP BY product.category;
 
 
 
