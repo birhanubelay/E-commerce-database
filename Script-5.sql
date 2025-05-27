@@ -1,3 +1,4 @@
+--create schema commerce_platform;
 --create TABLE commerce_platform.employee_table(
 --employee_id SERIAL primary key,
 --first_name VARCHAR(15) not null,
